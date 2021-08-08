@@ -1,16 +1,16 @@
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useImperativeHandle, useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useImperativeHandle, useState } from 'react';
 
-import GlobalButton from "../../components/global/Button.js";
+import GlobalButton from '../../components/global/Button.js';
 
 const OPTIONS = [
-  { key: "All", value: "All Orders" },
-  { key: "Completed", value: "Completed" },
-  { key: "Pending", value: "Pending Payment" },
-  { key: "Processing", value: "Processing" },
-  { key: "On Hold", value: "On Hold" },
-  { key: "Cancelled", value: "Cancelled" },
-  { key: "Refunded", value: "Refunded" },
+  { key: 'All', value: 'All Orders' },
+  { key: 'Completed', value: 'Completed' },
+  { key: 'Pending', value: 'Pending Payment' },
+  { key: 'Processing', value: 'Processing' },
+  { key: 'On Hold', value: 'On Hold' },
+  { key: 'Cancelled', value: 'Cancelled' },
+  { key: 'Refunded', value: 'Refunded' },
 ];
 
 const OptionList = ({ optionList, selected, setSelected }) => {
@@ -76,21 +76,21 @@ const OrderFilter = ({ currentOption, handleOption, visible, setVisible }) => {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    flexDirection: "column-reverse",
-    justifyContent: "flex-start",
-    alignItems: "stretch",
+    flexDirection: 'column-reverse',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
   },
   spaceView: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderTopRightRadius: 38,
     borderTopLeftRadius: 38,
     padding: 20,
-    alignItems: "stretch",
-    shadowColor: "#000",
+    alignItems: 'stretch',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -99,30 +99,30 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   optionListStyle: {
-    justifyContent: "center",
-    alignItems: "stretch",
-    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    width: '100%',
   },
   option: {
     marginHorizontal: 10,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderColor: "gray",
-    justifyContent: "space-between",
+    borderColor: 'gray',
+    justifyContent: 'space-between',
   },
   selected: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   titleSelected: {
-    color: "blue",
+    color: 'blue',
   },
   titleOption: {
     fontSize: 16,
-    color: "black",
+    color: 'black',
   },
   applyButton: {
     width: 320,
-    backgroundColor: "#24a0ed",
+    backgroundColor: '#24a0ed',
   },
 });
 

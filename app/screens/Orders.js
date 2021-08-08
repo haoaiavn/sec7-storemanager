@@ -1,52 +1,55 @@
-import { Pressable, StyleSheet, View } from 'react-native';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import {
+  FETCH_ORDER_LIST,
+  REFRESH_ORDER_LIST,
+} from '../redux/actions/constants.js';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import GlobalInput from '../components/global/Input.js';
 import { Ionicons } from '@expo/vector-icons';
+import LoadingScreen from './common/Loading.js';
 import OrderFilter from '../components/order/Filter.js';
 import OrderList from '../components/order/List.js';
-import LoadingScreen from './common/Loading.js';
-import { getOrderListData } from '../apiFaker';
 import { getListFilter } from '../utils/order/getListFilter';
 import { useNavigation } from '@react-navigation/native';
 
-let list = [];
-let currentOption = { key: 'All', value: 'All Orders' };
-
 const OrdersScreen = () => {
   const [visibleFilter, setVisibleFilter] = useState(false);
+  const [currentOption, setCurrentOption] = useState({
+    key: 'All',
+    value: 'All Orders',
+  });
   const navigation = useNavigation();
-  const [searchOrder, setSearchOrder] = useState('');
-  const [listFilter, setListFilter] = useState(null);
-  const [isLoading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const orderListState = useSelector((state) => state.orderList);
+  const dispatch = useDispatch();
   const handleOption = (selected) => {
-    currentOption = selected;
-    setListFilter(getListFilter(selected, list));
+    setCurrentOption({ ...selected });
   };
-  const loadList = async () => {
-    list = await getOrderListData();
-    setListFilter(getListFilter(currentOption, list));
+  const refreshList = () => {
+    dispatch({ type: REFRESH_ORDER_LIST });
+  };
+  const loadList = () => {
+    dispatch({ type: FETCH_ORDER_LIST, nextPage: orderListState.nextPage });
   };
   useEffect(() => {
-    const firstLoad = async () => {
-      await loadList();
-      setLoading(false);
-    };
-    firstLoad();
+    loadList();
   }, []);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Pressable
           style={styles.filterButon}
-          onPress={() => setVisibleFilter(true)}>
+          onPress={() => setVisibleFilter(true)}
+        >
           <Ionicons name="options" color="gray" size={24} />
         </Pressable>
       ),
     });
   }, [navigation]);
 
-  if (isLoading) {
+  if (orderListState.isLoading && orderListState.nextPage == 1) {
     return <LoadingScreen />;
   }
   return (
@@ -55,9 +58,19 @@ const OrdersScreen = () => {
         style={styles.searchBox}
         maxLength={64}
         placeholder="Search Order"
-        getText={setSearchOrder}
+        getText={setSearchText}
       />
-      <OrderList list={listFilter ? listFilter : list} refreshList={loadList} />
+      <OrderList
+        list={getListFilter(currentOption, orderListState.list)}
+        refreshList={refreshList}
+        onEndReached={loadList}
+      >
+        {orderListState.isLoading && orderListState.nextPage >= 2 && (
+          <View style={styles.activityIndicatorView}>
+            <ActivityIndicator />
+          </View>
+        )}
+      </OrderList>
       <OrderFilter
         currentOption={currentOption}
         handleOption={(selected) => handleOption(selected)}
@@ -82,6 +95,11 @@ const styles = StyleSheet.create({
   },
   filterButon: {
     marginHorizontal: 10,
+  },
+  activityIndicatorView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
 });
 

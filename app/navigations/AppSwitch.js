@@ -33,12 +33,10 @@ const AppSwitch = () => {
   if (!checkedUser) {
     return <SplashScreen />;
   }
-  return (
-    userToken == null ? (
-      <AuthStack setUserToken={setUserToken} />
-    ) : (
-      <AppFlows setUserToken={setUserToken} />
-    )
+  return userToken == null ? (
+    <AuthStack setUserToken={setUserToken} />
+  ) : (
+    <AppFlows setUserToken={setUserToken} />
   );
 };
 

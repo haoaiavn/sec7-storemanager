@@ -2,8 +2,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import StatusItem from './StatusItem.js';
-import { toStringDateTime } from '../../utils/formatDateTime.js';
+import StatusItem from './StatusItem';
+import { toStringDateTime } from '../../utils/formatDateTime';
 
 const OrderItem = ({ item }) => {
   return (
@@ -14,14 +14,14 @@ const OrderItem = ({ item }) => {
       <View style={styles.orderInfor}>
         <View style={styles.statusItem}>
           <Text style={[styles.orderID, styles.textInfor]}>{item.id}</Text>
-          <StatusItem status={item.status} />
+          <StatusItem status={{ key: 'Completed', value: 'Completed' }} />
         </View>
         <Text style={[styles.orderDateTime, styles.textInfor]}>
-          {toStringDateTime(item.date)}
+          {toStringDateTime(new Date(item.createdAt))}
         </Text>
         <View>
           <Text style={[styles.orderProduct, styles.textInfor]}>
-            ● {item.product.name} {`x${item.amount}`}
+            ● {item.productName} {`x${item.amount}`}
           </Text>
         </View>
       </View>

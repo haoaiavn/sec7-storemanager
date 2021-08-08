@@ -1,16 +1,16 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import GlobalButton from '../components/global/Button.js';
 import { Ionicons } from '@expo/vector-icons';
 import LoadingScreen from './common/Loading.js';
 import StatusItem from '../components/order/StatusItem.js';
-import { getOrderDetailById } from '../apiFaker';
 import { toStringDateTime } from '../utils/formatDateTime.js';
 
-let orderDetail = {};
 const OrderDetailScreen = ({ route, navigation }) => {
-  const [isLoading, setLoading] = useState(true);
+  const orderDetailState = useSelector((state) => state.orderDetail);
+  const dispatch = useDispatch();
   const { id } = route.params;
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -18,14 +18,13 @@ const OrderDetailScreen = ({ route, navigation }) => {
     });
   }, [navigation]);
 
-  const loadOrderDetail = async () => {
-    orderDetail = await getOrderDetailById(id);
-    setLoading(false);
+  const fetchOrderDetail = () => {
+    dispatch({ type: 'FETCH_ORDER_DETAIL', id: id });
   };
   useEffect(() => {
-    loadOrderDetail();
+    fetchOrderDetail();
   }, []);
-  if (isLoading) {
+  if (orderDetailState.isLoading) {
     return <LoadingScreen />;
   }
   return (
@@ -37,12 +36,12 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <View style={styles.orderInfor}>
           <View style={styles.statusItem}>
             <Text style={[styles.orderID, styles.textInfor]}>
-              {orderDetail.id}
+              {orderDetailState.detail.id}
             </Text>
-            <StatusItem status={orderDetail.status} />
+            <StatusItem status={{ key: 'Completed', value: 'Completed' }} />
           </View>
           <Text style={[styles.orderDateTime, styles.textInfor]}>
-            {toStringDateTime(new Date())}
+            {toStringDateTime(new Date(orderDetailState.detail.createdAt))}
           </Text>
         </View>
         <View></View>
@@ -51,16 +50,16 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <Text style={styles.titleElement}>Billing Address</Text>
         <View style={styles.frameView}>
           <Text style={styles.nameStyle}>
-            Name: {orderDetail.billingAddress.name}
+            Name: {orderDetailState.detail.billingName}
           </Text>
           <Text style={[styles.textFrameStyle, styles.addressStyle]}>
-            {orderDetail.billingAddress.address}
+            {orderDetailState.detail.billingAddress}
           </Text>
           <Text style={[styles.textFrameStyle]}>
-            Email: {orderDetail.billingAddress.email}
+            Email: {orderDetailState.detail.billingEmail}
           </Text>
           <Text style={[styles.textFrameStyle]}>
-            Phone: {orderDetail.billingAddress.phone}
+            Phone: {orderDetailState.detail.billingPhone}
           </Text>
         </View>
       </View>
@@ -68,13 +67,13 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <Text style={styles.titleElement}>Shipping Address</Text>
         <View style={styles.frameView}>
           <Text style={styles.nameStyle}>
-            Name: {orderDetail.shippingAddress.name}
+            Name: {orderDetailState.detail.shippingName}
           </Text>
           <Text style={[styles.textFrameStyle, styles.addressStyle]}>
-            {orderDetail.shippingAddress.address}
+            {orderDetailState.detail.shippingAddress}
           </Text>
           <Text style={[styles.textFrameStyle]}>
-            Phone: {orderDetail.shippingAddress.phone}
+            Phone: {orderDetailState.detail.shippingPhone}
           </Text>
         </View>
       </View>
@@ -84,17 +83,18 @@ const OrderDetailScreen = ({ route, navigation }) => {
         <View style={styles.frameView}>
           <View style={styles.productInfor}>
             <Text style={[styles.nameStyle, styles.productNameStyle]}>
-              Name: {orderDetail.productInformation.name}
+              Name: {orderDetailState.detail.productName}
             </Text>
             <Text style={styles.nameStyle}>
-              ${orderDetail.productInformation.price}x{orderDetail.amount}
+              ${orderDetailState.detail.productPrice}x
+              {orderDetailState.detail.amount}
             </Text>
           </View>
           <Text style={[styles.textFrameStyle, styles.addressStyle]}>
-            {orderDetail.shippingAddress.address}
+            {orderDetailState.detail.shippingAddress}
           </Text>
           <Text style={[styles.textFrameStyle]}>
-            Phone: {orderDetail.shippingAddress.phone}
+            Phone: {orderDetailState.detail.shippingPhone}
           </Text>
         </View>
       </View>
@@ -105,15 +105,15 @@ const OrderDetailScreen = ({ route, navigation }) => {
         </View>
         <View style={styles.subDetailPrice}>
           <Text>Payment method</Text>
-          <Text>{orderDetail.method}</Text>
+          <Text>{orderDetailState.detail.method}</Text>
         </View>
         <View style={styles.subDetailPrice}>
           <Text>Tax</Text>
-          <Text>{orderDetail.tax}</Text>
+          <Text>{orderDetailState.detail.tax}</Text>
         </View>
         <View style={styles.subDetailPrice}>
           <Text>Shipping</Text>
-          <Text>${orderDetail.shipping}</Text>
+          <Text>${orderDetailState.detail.shipCost}</Text>
         </View>
         <View style={styles.subDetailPrice}>
           <Text style={styles.textTotal}>Total</Text>
@@ -122,20 +122,6 @@ const OrderDetailScreen = ({ route, navigation }) => {
       </View>
       <View>
         <Text style={styles.titleElement}>Change Order Status</Text>
-        <View style={styles.frameView}>
-          <Text style={styles.nameStyle}>
-            Name: {orderDetail.billingAddress.name}
-          </Text>
-          <Text style={[styles.textFrameStyle, styles.addressStyle]}>
-            {orderDetail.billingAddress.address}
-          </Text>
-          <Text style={[styles.textFrameStyle]}>
-            Email: {orderDetail.billingAddress.email}
-          </Text>
-          <Text style={[styles.textFrameStyle]}>
-            Phone: {orderDetail.billingAddress.phone}
-          </Text>
-        </View>
       </View>
       <GlobalButton style={styles.buttonStyle} title="Save Order" />
     </ScrollView>

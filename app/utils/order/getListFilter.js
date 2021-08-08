@@ -15,5 +15,7 @@ export const getListFilter = (option, list) => {
       return newList.filter((order) => order.status.key == 'Cancelled');
     case 'Refunded':
       return newList.filter((order) => order.status.key == 'Refunded');
+    default:
+      return newList;
   }
 };

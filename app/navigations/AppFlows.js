@@ -34,7 +34,8 @@ const AppTab = ({ setUserToken }) => {
     <Tab.Navigator
       initialRouteName="Orders"
       tabBarOptions={tabBarOptions}
-      screenOptions={HIDE_HEADER}>
+      screenOptions={HIDE_HEADER}
+    >
       <Tab.Screen
         name="Home"
         component={HomeSceen}
@@ -57,7 +58,8 @@ const AppTab = ({ setUserToken }) => {
       />
       <Tab.Screen
         name="Account"
-        options={screenTabOption({ name: 'Account', icon: 'person' })}>
+        options={screenTabOption({ name: 'Account', icon: 'person' })}
+      >
         {() => <AccountScreen setUserToken={setUserToken} />}
       </Tab.Screen>
     </Tab.Navigator>
@@ -72,7 +74,8 @@ const AppFlows = ({ setUserToken }) => {
     <Stack.Navigator initialRouteName="AppTab" screenOptions={HIDE_HEADER}>
       <Stack.Screen
         name="AppTab"
-        options={screenStackOption({ title: 'Main' })}>
+        options={screenStackOption({ title: 'Main' })}
+      >
         {() => <AppTab setUserToken={setUserToken} />}
       </Stack.Screen>
       <Stack.Screen

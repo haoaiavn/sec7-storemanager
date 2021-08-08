@@ -13,7 +13,8 @@ const Button = ({
     <Pressable
       style={[styles.button, style]}
       onPress={onPress}
-      disabled={disabled}>
+      disabled={disabled}
+    >
       <Text style={(styles.title, styleTitle)}>{title}</Text>
     </Pressable>
   );
